@@ -10,7 +10,8 @@
   "mainInput": "AbcApp",
   "mainOutput": "main",
   "dependencies": {
-    "react": "~0.11.2"
+    "react": "~0.11.2",
+    "underscore": "~1.7.0"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
