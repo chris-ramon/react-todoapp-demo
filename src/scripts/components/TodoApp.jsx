@@ -30,6 +30,11 @@ var Todo = React.createClass({
         });
     },
 
+    onRemove: function(e) {
+        e.preventDefault();
+        this.props.handleTodoRemove({todo: this.props.todo});
+    },
+
     render: function() {
         return (
             <li>
@@ -38,8 +43,9 @@ var Todo = React.createClass({
                     checked={this.state.done}
                     onChange={this.onToggle}
                     ref="todoDone" />
-                -
+                <span> - </span>
                 {this.props.todo.text}
+                <span> - <a href="#" onClick={this.onRemove}>x</a></span>
             </li>
         );
     }
@@ -48,22 +54,68 @@ var Todo = React.createClass({
 var Todos = React.createClass({
     render: function() {
         var todos = [];
-        this.props.todos.forEach(function(todo) {
+        this.props.todos.forEach(_.bind(function(todo) {
             todos.push(<Todo
                 key={todo.id}
                 todo={todo}
+                handleTodoRemove={this.props.handleTodoRemove}
             />);
-        });
+        }, this));
         return (<ul>{todos}</ul>);
     }
 });
 
+
+
+var TodoForm = React.createClass({
+    handleSubmit: function(e) {
+        e.preventDefault();
+        var text = this.refs.todoText.getDOMNode().value.trim();
+        if(_.isEmpty(text)) return;
+        this.props.handleTodoSubmit({text: text});
+        this.refs.todoText.getDOMNode().value = "";
+    },
+
+    render: function() {
+        return (
+            <form className="todo-form" onSubmit={this.handleSubmit}>
+                <input type="text" ref="todoText"/>
+                <input type="submit" />
+            </form>
+        );
+    }
+});
+
 var TodoApp = React.createClass({
-  render: function() {
-    return (
-      <Todos todos={this.props.todos} />
-    );
-  }
+    getInitialState: function() {
+        return {
+            todos: this.props.todos
+        }
+    },
+
+    handleTodoSubmit: function(todoText) {
+        this.props.todos.push({id: _.uniqueId(), text: todoText, done: false});
+        this.setState({
+            todos: this.props.todos
+        });
+    },
+
+    handleTodoRemove: function(payload) {
+        var i = this.props.todos.indexOf(payload.todo);
+        this.props.todos.splice(i, 1);
+        this.setState({
+            todos: this.props.todos
+        });
+    },
+
+    render: function() {
+        return (
+            <div>
+                <TodoForm handleTodoSubmit={this.handleTodoSubmit} />
+                <Todos todos={this.state.todos} handleTodoRemove={this.handleTodoRemove} />
+            </div>
+        );
+    }
 });
 
 var todos = [

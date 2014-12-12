@@ -39,3 +39,12 @@ html, body {
 .fade-leave.fade-leave-active {
   opacity: 0.01;
 }
+
+.todo-form {
+    padding-top: 20px;
+    padding-left: 22px;
+}
+
+.todo-form input[type="submit"] {
+    margin-left: 20px;
+}
